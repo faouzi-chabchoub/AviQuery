@@ -24,76 +24,70 @@ import java.util.stream.Collectors;
 		return queryList.getList().stream().map(arg0).collect(Collectors.toList());
 	}
 
-	@Override
-	public List<T> intersect(List<T> list) {
+	public QueryFrom<T> intersect(List<T> list) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());		
-		return distancList.stream().distinct().filter(distancList1::contains) .collect(Collectors.toList());
+		return new QueryFrom<T>(distancList.stream().distinct().filter(distancList1::contains) .collect(Collectors.toList()));
 	}
 	
-	@Override
-	public <R1> List<T> intersectBy(List<T> list, Function<T, R1> function) {
+	public <R1> QueryFrom<T> intersect(List<T> list, Function<T, R1> function) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());
-		return distancList.stream().distinct().filter(e-> contains(distancList1,function,e)) .collect(Collectors.toList());
+		return new QueryFrom<T>(distancList.stream().distinct().filter(e-> contains(distancList1,function,e)) .collect(Collectors.toList()));
 	}
 	
-	@Override
-	public List<T> union(List<T> list) {
+	
+
+	public QueryFrom<T> union(List<T> list) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());
         Set<T> set = new HashSet<T>();
         set.addAll(distancList);
         set.addAll(distancList1);
-		return set.stream().distinct().collect(Collectors.toList());
+        return new QueryFrom<T>( set.stream().distinct().collect(Collectors.toList()));
 	}
 	
-	@Override
-	public List<T> difference(List<T> list) {
+	public QueryFrom<T> difference(List<T> list) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());
         Set<T> set = new HashSet<T>();
         set.addAll(distancList.stream().distinct().filter(e-> !distancList1.contains(e)) .collect(Collectors.toList()));
         set.addAll(distancList1.stream().distinct().filter(e-> !distancList.contains(e)) .collect(Collectors.toList()));
-		return set.stream().distinct() .collect(Collectors.toList());
+        return new QueryFrom<T>( set.stream().distinct().collect(Collectors.toList()));
 	}
 	
-	@Override
-	public<R1> List<T> differenceBy(List<T> list, Function<T, R1> function) {
+	public<R1> QueryFrom<T> difference(List<T> list, Function<T, R1> function) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());
         Set<T> set = new HashSet<T>();
         set.addAll(distancList.stream().distinct().filter(e-> !contains(distancList1,function,e)) .collect(Collectors.toList()));
         set.addAll(distancList1.stream().distinct().filter(e-> !contains(distancList1,function,e)) .collect(Collectors.toList()));
-		return set.stream().distinct() .collect(Collectors.toList());
+        return new QueryFrom<T>( set.stream().distinct().collect(Collectors.toList()));
 	}
 	
-	@Override
-	public List<T> left(List<T> list) {
+
+	public QueryFrom<T> left(List<T> list) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());
-		return distancList.stream().distinct().filter(e-> !distancList1.contains(e)) .collect(Collectors.toList());
+		return new QueryFrom<T>( distancList.stream().distinct().filter(e-> !distancList1.contains(e)) .collect(Collectors.toList()));
 	}
 	
-	@Override
-	public <R1> List<T> leftBy(List<T> list, Function<T, R1> function) {
+	public<R1> QueryFrom<T> left(List<T> list, Function<T, R1> function) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());
-		return distancList.stream().distinct().filter(e-> !contains(distancList1,function,e)) .collect(Collectors.toList());
+		return new QueryFrom<T>( distancList.stream().distinct().filter(e-> !contains(distancList1,function,e)) .collect(Collectors.toList()));
 	}
 	
-	@Override
-	public List<T> right(List<T> list) {
+	public QueryFrom<T> right(List<T> list) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());
-		return distancList1.stream().distinct().filter(e-> !distancList.contains(e)) .collect(Collectors.toList());
+		return new QueryFrom<T>(distancList1.stream().distinct().filter(e-> !distancList.contains(e)) .collect(Collectors.toList()));
 	}
 
-	@Override
-	public <R1> List<T> rightBy(List<T> list, Function<T, R1> function) {
+	public<R1> QueryFrom<T> right(List<T> list, Function<T, R1> function) {
 		Set<T> distancList = getList().stream().distinct().collect(Collectors.toSet());
 		Set<T> distancList1 = list.stream().distinct().collect(Collectors.toSet());
-		return distancList1.stream().distinct().filter(e-> !contains(distancList,function,e)) .collect(Collectors.toList());
+		return new QueryFrom<T>( distancList1.stream().distinct().filter(e-> !contains(distancList,function,e)) .collect(Collectors.toList()));
 	}
 
 	private <R1> boolean contains(Set<T> distancList1, Function<T, R1> function, T e) {
